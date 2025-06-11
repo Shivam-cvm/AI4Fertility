@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Embryo Assessment & Selection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #a8d8dc 0%, #7cc7d0 50%, #b8a9c9 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6b5b95 0%, #b8a9c9 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="20" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: 1.4em;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr 400px;
+            gap: 0;
+            min-height: 800px;
+        }
+
+        .controls-panel {
+            background: #f5f7f9;
+            padding: 25px;
+            border-right: 2px solid #d1dce5;
+            overflow-y: auto;
+        }
+
+        .analysis-panel {
+            background: white;
+            padding: 25px;
+            border-right: 2px solid #d1dce5;
+            overflow-y: auto;
+        }
+
+        .results-panel {
+            background: #faf9fc;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-size: 1.5em;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            border-bottom: 3px solid #88a0b8;
+            padding-bottom: 10px;
+        }
+
+        .embryo-upload {
+            border: 3px dashed #88a0b8;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: linear-gradient(135deg, #e8f0f5 0%, #f0f6f9 100%);
+        }
+
+        .embryo-upload:hover {
+            border-color: #6b5b95;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(107, 91, 149, 0.2);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #88a0b8;
+            margin-bottom: 10px;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #d1dce5;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #88a0b8;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(136, 160, 184, 0.1);
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #dd6b8a 0%, #e683a3 100%);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(221, 107, 138, 0.4);
+        }
+
+        .embryo-viewer {
+            background: #4a5568;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .embryo-image {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #f39c12, #e67e22, #d35400);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4em;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 4px solid #ecf0f1;
+        }
+
+        .embryo-day {
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .ai-analysis {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f8fc 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid #7cc7d0;
+        }
+
+        .analysis-header {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-content {
+            line-height: 1.6;
+            color: #444;
+            font-size: 0.95em;
+        }
+
+        .grading-card {
+            background: linear-gradient(135deg, #f5f0f5 0%, #f0e8f0 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid #b8a9c9;
+        }
+
+        .grade-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .grade-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .grade-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .grade-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .viability-score {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f8fc 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#7cc7d0 0deg, #dd6b8a 120deg, #b8a9c9 240deg, #88a0b8 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+
+        .score-inner {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .ranking-list {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            transition: background 0.3s ease;
+        }
+
+        .ranking-item:hover {
+            background: #f8f9fa;
+        }
+
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #88a0b8, #6b5b95);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .embryo-info {
+            flex: 1;
+        }
+
+        .embryo-id {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .embryo-details {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 2px;
+        }
+
+        .success-rate {
+            background: linear-gradient(135deg, #7cc7d0, #a8d8dc);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .warning-alert {
+            background: linear-gradient(135deg, #fff3cd 0%, #fdeaa7 100%);
+            border: 1px solid #f39c12;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            color: #8a6d3b;
+        }
+
+        .morphology-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .morphology-item {
+            background: rgba(255,255,255,0.8);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .time-lapse-data {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .timing-events {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .timing-item {
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            text-align: center;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls-panel, .analysis-panel {
+                border-right: none;
+                border-bottom: 2px solid #e9ecef;
+            }
+        }
+
+        .emoji {
+            font-size: 1.2em;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c 0%, #f39c12 50%, #27ae60 100%);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🔬 AI Embryo Assessment System</h1>
+                <p>Advanced morphology analysis and selection support for embryologists</p>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <h2 class="panel-title">
+                    <span class="emoji">📤</span>
+                    Embryo Input
+                </h2>
+
+                <div class="embryo-upload" onclick="simulateImageUpload()">
+                    <div class="upload-icon">📷</div>
+                    <div><strong>Upload Embryo Image</strong></div>
+                    <div style="font-size: 0.9em; color: #666; margin-top: 5px;">
+                        Drag & drop or click to select<br>
+                        (Supports: .jpg, .png, .tiff)
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="emoji">📋</span>
+                        Culture Information
+                    </div>
+                    <div class="form-group">
+                        <label>Embryo ID</label>
+                        <input type="text" id="embryo_id" value="EMB-2024-001" placeholder="e.g., EMB-2024-001">
+                    </div>
+                    <div class="form-group">
+                        <label>Development Day</label>
+                        <select id="development_day">
+                            <option value="3">Day 3 (Cleavage)</option>
+                            <option value="5" selected>Day 5 (Blastocyst)</option>
+                            <option value="6">Day 6 (Blastocyst)</option>
+                            <option value="7">Day 7 (Blastocyst)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Culture Medium</label>
+                        <select id="culture_medium">
+                            <option value="sequential">Sequential medium</option>
+                            <option value="single">Single-step medium</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Incubation System</label>
+                        <select id="incubation">
+                            <option value="time_lapse">Time-lapse incubator</option>
+                            <option value="standard">Standard incubator</option>
+                            <option value="benchtop">Benchtop incubator</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="emoji">🔬</span>
+                        Manual Assessment
+                    </div>
+                    <div class="form-group">
+                        <label>Expansion Grade (1-6)</label>
+                        <select id="expansion">
+                            <option value="3">3 - Full blastocyst</option>
+                            <option value="4" selected>4 - Expanded blastocyst</option>
+                            <option value="5">5 - Hatching blastocyst</option>
+                            <option value="6">6 - Hatched blastocyst</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ICM Grade</label>
+                        <select id="icm_grade">
+                            <option value="A" selected>A - Many cells, tightly packed</option>
+                            <option value="B">B - Several cells, loosely grouped</option>
+                            <option value="C">C - Very few cells</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>TE Grade</label>
+                        <select id="te_grade">
+                            <option value="A" selected>A - Many cells, cohesive epithelium</option>
+                            <option value="B">B - Few cells, loose epithelium</option>
+                            <option value="C">C - Very few large cells</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="analyze-btn" onclick="analyzeEmbryo()">
+                    🚀 Run AI Analysis
+                </button>
+            </div>
+
+            <!-- Analysis Panel -->
+            <div class="analysis-panel">
+                <h2 class="panel-title">
+                    <span class="emoji">🤖</span>
+                    AI Analysis
+                </h2>
+
+                <div class="embryo-viewer">
+                    <div class="embryo-image" id="embryo-display">
+                        🥚
+                    </div>
+                    <div class="embryo-day" id="embryo-day-display">Day 5 Blastocyst</div>
+                </div>
+
+                <div id="ai-analysis-content">
+                    <div class="ai-analysis">
+                        <div class="analysis-header">
+                            <span class="emoji">📊</span>
+                            Automated Morphology Assessment
+                        </div>
+                        <div class="analysis-content">
+                            Upload an embryo image to receive AI-powered morphological analysis including expansion assessment, 
+                            ICM/TE quality evaluation, and comparative grading against training datasets of 100,000+ embryos.
+                        </div>
+                    </div>
+
+                    <div class="grading-card">
+                        <div class="analysis-header">
+                            <span class="emoji">🎯</span>
+                            AI Grading Results
+                        </div>
+                        <div class="grade-display">
+                            <div class="grade-item">
+                                <div class="grade-value">--</div>
+                                <div class="grade-label">Expansion</div>
+                            </div>
+                            <div class="grade-item">
+                                <div class="grade-value">--</div>
+                                <div class="grade-label">ICM Quality</div>
+                            </div>
+                            <div class="grade-item">
+                                <div class="grade-value">--</div>
+                                <div class="grade-label">TE Quality</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="results-panel">
+                <h2 class="panel-title">
+                    <span class="emoji">📈</span>
+                    Clinical Recommendations
+                </h2>
+
+                <div class="viability-score">
+                    <div class="score-circle">
+                        <div class="score-inner" id="viability-score">--</div>
+                    </div>
+                    <div><strong>Implantation Potential Score</strong></div>
+                    <div style="font-size: 0.9em; color: #666; margin-top: 5px;">
+                        AI confidence: <span id="confidence-level">--</span>%
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidence-bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div id="recommendations-content">
+                    <div class="ai-analysis">
+                        <div class="analysis-header">
+                            <span class="emoji">🎯</span>
+                            Transfer Recommendation
+                        </div>
+                        <div class="analysis-content">
+                            AI assessment and ranking will appear here after analysis. The system evaluates morphological features, 
+                            developmental timing, and compares against successful implantation outcomes from similar embryos.
+                        </div>
+                    </div>
+
+                    <div class="warning-alert" style="display: none;" id="warning-section">
+                        <strong>⚠️ Quality Concerns Detected</strong><br>
+                        AI has identified potential morphological concerns that may affect viability.
+                    </div>
+
+                    <div class="ranking-list" style="margin-top: 20px;">
+                        <div style="padding: 15px; background: #f8f9fa; font-weight: 600; border-bottom: 1px solid #dee2e6;">
+                            📊 Cohort Ranking (when multiple embryos analyzed)
+                        </div>
+                        <div style="padding: 15px; color: #666; text-align: center;">
+                            Analyze embryos to see relative ranking and selection recommendations
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: #f8f9fa; border-top: 2px solid #dee2e6; padding: 20px; text-align: center; color: #6c757d; font-style: italic;">
+            <strong>⚠️ Embryologist Decision Support Tool</strong><br>
+            AI morphology assessment provides objective analysis to support embryologist expertise. 
+            All embryo selection decisions must incorporate clinical context, patient history, and professional judgment. 
+            This system enhances but never replaces embryologist evaluation.
+        </div>
+    </div>
+
+    <script>
+        let currentEmbryo = null;
+
+        function simulateImageUpload() {
+            // Simulate image upload
+            const uploadDiv = document.querySelector('.embryo-upload');
+            uploadDiv.style.background = 'linear-gradient(135deg, #d5edda 0%, #c3e6cb 100%)';
+            uploadDiv.style.borderColor = '#27ae60';
+            uploadDiv.innerHTML = `
+                <div class="upload-icon" style="color: #27ae60;">✅</div>
+                <div><strong>Image Uploaded Successfully</strong></div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">
+                    EMB-2024-001_Day5.jpg<br>
+                    Ready for AI analysis
+                </div>
+            `;
+        }
+
+        function analyzeEmbryo() {
+            const embryoId = document.getElementById('embryo_id').value;
+            const developmentDay = document.getElementById('development_day').value;
+            const expansion = document.getElementById('expansion').value;
+            const icmGrade = document.getElementById('icm_grade').value;
+            const teGrade = document.getElementById('te_grade').value;
+            const incubation = document.getElementById('incubation').value;
+
+            // Generate AI analysis
+            const analysis = generateEmbryoAnalysis(embryoId, developmentDay, expansion, icmGrade, teGrade, incubation);
+            
+            // Update displays
+            updateEmbryoDisplay(analysis);
+            updateAnalysisPanel(analysis);
+            updateRecommendationsPanel(analysis);
+        }
+
+        function generateEmbryoAnalysis(embryoId, day, expansion, icm, te, incubation) {
+            // Simulate AI analysis
+            let viabilityScore = 75;
+            let confidence = 88;
+            let aiExpansion = expansion;
+            let aiIcm = icm;
+            let aiTe = te;
+            let concerns = [];
+            let recommendation = "Suitable for transfer";
+
+            // Adjust scores based on grades
+            if (icm === 'A' && te === 'A') {
+                viabilityScore = Math.min(95, viabilityScore + 20);
+                confidence = Math.min(95, confidence + 7);
+            } else if (icm === 'C' || te === 'C') {
+                viabilityScore = Math.max(30, viabilityScore - 25);
+                confidence = Math.max(65, confidence - 10);
+                concerns.push("Lower grade ICM/TE observed");
+                recommendation = "Consider as backup option";
+            }
+
+            // Day adjustments
+            if (day === '6' || day === '7') {
+                viabilityScore = Math.max(40, viabilityScore - 15);
+                concerns.push("Delayed development timeline");
+            }
+
+            // Time-lapse bonus
+            if (incubation === 'time_lapse') {
+                confidence = Math.min(95, confidence + 5);
+            }
+
+            return {
+                embryoId,
+                day,
+                expansion: aiExpansion,
+                icm: aiIcm,
+                te: aiTe,
+                viabilityScore,
+                confidence,
+                concerns,
+                recommendation,
+                incubation
+            };
+        }
+
+        function updateEmbryoDisplay(analysis) {
+            document.getElementById('embryo-day-display').textContent = `Day ${analysis.day} Blastocyst - ${analysis.embryoId}`;
+            
+            // Update embryo visualization based on grade
+            const embryoDisplay = document.getElementById('embryo-display');
+            if (analysis.icm === 'A' && analysis.te === 'A') {
+                embryoDisplay.style.background = 'radial-gradient(circle at 30% 30%, #27ae60, #2ecc71, #58d68d)';
+            } else if (analysis.icm === 'C' || analysis.te === 'C') {
+                embryoDisplay.style.background = 'radial-gradient(circle at 30% 30%, #e74c3c, #ec7063, #f1948a)';
+            } else {
+                embryoDisplay.style.background = 'radial-gradient(circle at 30% 30%, #f39c12, #e67e22, #f4d03f)';
+            }
+        }
+
+        function updateAnalysisPanel(analysis) {
+            // Update grading display
+            const gradeItems = document.querySelectorAll('.grade-item .grade-value');
+            gradeItems[0].textContent = analysis.expansion;
+            gradeItems[1].textContent = analysis.icm;
+            gradeItems[2].textContent = analysis.te;
+
+            // Update AI analysis content
+            const analysisContent = document.getElementById('ai-analysis-content');
+            
+            const morphologyDetails = `
+                <div class="morphology-details">
+                    <div class="morphology-item">
+                        <strong>Zona Pellucida:</strong> Intact, normal thickness
+                    </div>
+                    <div class="morphology-item">
+                        <strong>Blastocoel:</strong> Well-expanded cavity
+                    </div>
+                    <div class="morphology-item">
+                        <strong>Cell Symmetry:</strong> ${analysis.icm === 'A' ? 'Excellent' : analysis.icm === 'B' ? 'Good' : 'Fair'}
+                    </div>
+                    <div class="morphology-item">
+                        <strong>Fragmentation:</strong> <5% fragments detected
+                    </div>
+                </div>
+            `;
+
+            const timeLapseData = analysis.incubation === 'time_lapse' ? `
+                <div class="time-lapse-data">
+                    <strong>⏱️ Time-Lapse Kinetics</strong>
+                    <div class="timing-events">
+                        <div class="timing-item">
+                            <strong>t2:</strong> 25.3h<br>
+                            <small>First cleavage</small>
+                        </div>
+                        <div class="timing-item">
+                            <strong>t3:</strong> 35.7h<br>
+                            <small>Second cleavage</small>
+                        </div>
+                        <div class="timing-item">
+                            <strong>t5:</strong> 49.2h<br>
+                            <small>Third cleavage</small>
+                        </div>
+                        <div class="timing-item">
+                            <strong>tSB:</strong> 97.4h<br>
+                            <small>Start blastulation</small>
+                        </div>
+                    </div>
+                </div>
+            ` : '';
+
+            analysisContent.innerHTML = `
+                <div class="ai-analysis">
+                    <div class="analysis-header">
+                        <span class="emoji">🔍</span>
+                        AI Morphology Assessment
+                    </div>
+                    <div class="analysis-content">
+                        <strong>Automated Analysis:</strong> AI

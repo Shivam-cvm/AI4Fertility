@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Practice Management & Analytics Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #a8d8dc 0%, #7cc7d0 50%, #b8a9c9 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6b5b95 0%, #b8a9c9 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><rect x="20" y="20" width="60" height="60" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><rect x="30" y="30" width="40" height="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></svg>') repeat;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: 1.4em;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .dashboard-nav {
+            background: #f5f7f9;
+            padding: 20px 30px;
+            border-bottom: 2px solid #d1dce5;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            border-radius: 25px;
+            background: white;
+            border: 2px solid #d1dce5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #dd6b8a 0%, #e683a3 100%);
+            color: white;
+            border-color: #dd6b8a;
+            box-shadow: 0 4px 15px rgba(221, 107, 138, 0.3);
+        }
+
+        .nav-item:hover:not(.active) {
+            border-color: #88a0b8;
+            transform: translateY(-1px);
+        }
+
+        .main-dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 800px;
+        }
+
+        .sidebar {
+            background: #faf9fc;
+            padding: 25px;
+            border-right: 2px solid #d1dce5;
+        }
+
+        .content-area {
+            background: white;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-label {
+            display: block;
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 2px solid #d1dce5;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            border-color: #88a0b8;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(136, 160, 184, 0.1);
+        }
+
+        .update-btn {
+            background: linear-gradient(135deg, #7cc7d0 0%, #a8d8dc 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .update-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(124, 199, 208, 0.4);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f5f7f9 0%, #ffffff 100%);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid #88a0b8;
+            transition: transform 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .metric-title {
+            font-size: 0.95em;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .metric-icon {
+            font-size: 2em;
+            opacity: 0.7;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .metric-trend {
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .trend-up {
+            color: #7cc7d0;
+        }
+
+        .trend-down {
+            color: #dd6b8a;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .chart-period {
+            background: #f5f7f9;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            color: #4a5568;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f8fc 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7cc7d0;
+            font-size: 1.1em;
+            border: 2px dashed #88a0b8;
+        }
+
+        .ai-insights {
+            background: linear-gradient(135deg, #f5f0f5 0%, #f0e8f0 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #b8a9c9;
+        }
+
+        .insight-header {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .insight-list {
+            list-style: none;
+        }
+
+        .insight-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            line-height: 1.5;
+        }
+
+        .insight-priority {
+            background: #dd6b8a;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .insight-priority.medium {
+            background: #88a0b8;
+        }
+
+        .insight-priority.low {
+            background: #7cc7d0;
+        }
+
+        .alert-panel {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+        }
+
+        .alert-header {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .optimization-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .optimization-card {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f8fc 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid #7cc7d0;
+        }
+
+        .optimization-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .optimization-suggestion {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .efficiency-score {
+            text-align: center;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(#7cc7d0 0deg, #dd6b8a 120deg, #b8a9c9 240deg, #88a0b8 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .score-inner {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .score-label {
+            font-size: 1.1em;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .score-description {
+            font-size: 0.9em;
+            color: #7a7a7a;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 1200px) {
+            .main-dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                border-right: none;
+                border-bottom: 2px solid #d1dce5;
+            }
+
+            .optimization-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .workflow-timeline {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-time {
+            width: 80px;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.9em;
+        }
+
+        .timeline-status {
+            width: 120px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-align: center;
+            margin-right: 15px;
+        }
+
+        .status-on-time {
+            background: #e8f4f8;
+            color: #7cc7d0;
+        }
+
+        .status-delayed {
+            background: #fff3e0;
+            color: #f39c12;
+        }
+
+        .status-critical {
+            background: #ffe5e5;
+            color: #dd6b8a;
+        }
+
+        .timeline-description {
+            flex: 1;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>📊 AI Practice Management Dashboard</h1>
+                <p>Intelligent analytics and optimization for fertility clinic operations</p>
+            </div>
+        </div>
+
+        <div class="dashboard-nav">
+            <div class="nav-item active" onclick="showTab('overview')">📈 Overview</div>
+            <div class="nav-item" onclick="showTab('scheduling')">📅 Scheduling</div>
+            <div class="nav-item" onclick="showTab('operations')">⚙️ Operations</div>
+            <div class="nav-item" onclick="showTab('financials')">💰 Financials</div>
+            <div class="nav-item" onclick="showTab('insights')">🤖 AI Insights</div>
+        </div>
+
+        <div class="main-dashboard">
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <span>🎛️</span>
+                        Dashboard Controls
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Time Period</label>
+                        <select id="time-period">
+                            <option value="today">Today</option>
+                            <option value="week" selected>This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="quarter">This Quarter</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Department</label>
+                        <select id="department">
+                            <option value="all">All Departments</option>
+                            <option value="clinical">Clinical</option>
+                            <option value="lab">Laboratory</option>
+                            <option value="admin">Administration</option>
+                            <option value="nursing">Nursing</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Provider</label>
+                        <select id="provider">
+                            <option value="all">All Providers</option>
+                            <option value="dr_smith">Dr. Smith</option>
+                            <option value="dr_jones">Dr. Jones</option>
+                            <option value="dr_garcia">Dr. Garcia</option>
+                        </select>
+                    </div>
+                    <button class="update-btn" onclick="updateDashboard()">
+                        Update Dashboard
+                    </button>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <span>⚡</span>
+                        Quick Actions
+                    </div>
+                    <div style="display: grid; gap: 8px;">
+                        <button style="padding: 8px 12px; border: 1px solid #d1dce5; background: white; border-radius: 6px; cursor: pointer; font-size: 0.85em;">📋 Schedule Report</button>
+                        <button style="padding: 8px 12px; border: 1px solid #d1dce5; background: white; border-radius: 6px; cursor: pointer; font-size: 0.85em;">📧 Send Alerts</button>
+                        <button style="padding: 8px 12px; border: 1px solid #d1dce5; background: white; border-radius: 6px; cursor: pointer; font-size: 0.85em;">⚙️ Settings</button>
+                    </div>
+                </div>
+
+                <div class="efficiency-score">
+                    <div class="score-circle">
+                        <div class="score-inner" id="efficiency-score">87</div>
+                    </div>
+                    <div class="score-label">Operational Efficiency</div>
+                    <div class="score-description">AI-calculated based on patient flow, resource utilization, and outcome metrics</div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div id="overview" class="tab-content active">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Patient Volume</div>
+                                <div class="metric-icon">👥</div>
+                            </div>
+                            <div class="metric-value">156</div>
+                            <div class="metric-trend trend-up">
+                                ↗️ +12% vs last week
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Appointment Utilization</div>
+                                <div class="metric-icon">📅</div>
+                            </div>
+                            <div class="metric-value">94%</div>
+                            <div class="metric-trend trend-up">
+                                ↗️ +3% vs target
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Average Wait Time</div>
+                                <div class="metric-icon">⏱️</div>
+                            </div>
+                            <div class="metric-value">8.3</div>
+                            <div class="metric-trend trend-down">
+                                ↘️ -2.1 min vs target
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Revenue per Patient</div>
+                                <div class="metric-icon">💰</div>
+                            </div>
+                            <div class="metric-value">€3,247</div>
+                            <div class="metric-trend trend-up">
+                                ↗️ +8% vs last month
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Patient Flow Analytics</div>
+                            <div class="chart-period">Last 7 days</div>
+                        </div>
+                        <div class="chart-placeholder">
+                            📊 Interactive patient flow chart would display here
+                        </div>
+                    </div>
+
+                    <div class="alert-panel">
+                        <div class="alert-header">
+                            <span>⚠️</span>
+                            Today's Priority Alerts
+                        </div>
+                        <div class="alert-item">
+                            <strong>Scheduling Bottleneck:</strong> Dr. Garcia's afternoon slots are overbooked by 25 minutes. Consider redistributing 2 follow-up appointments.
+                        </div>
+                        <div class="alert-item">
+                            <strong>Lab Capacity:</strong> Embryology lab approaching 95% capacity. Recommend staggering procedures or extending hours.
+                        </div>
+                        <div class="alert-item">
+                            <strong>Patient Communication:</strong> 8 patients waiting for cycle start confirmation calls. Priority follow-up needed.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="scheduling" class="tab-content">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Today's Schedule Optimization</div>
+                            <div class="chart-period">Real-time updates</div>
+                        </div>
+                        <div class="workflow-timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-time">08:00</div>
+                                <div class="timeline-status status-on-time">On Time</div>
+                                <div class="timeline-description">Dr. Smith - IVF consultation (Patient A.M.)</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">08:30</div>
+                                <div class="timeline-status status-on-time">On Time</div>
+                                <div class="timeline-description">Ultrasound Suite 1 - Monitoring visit (Patient B.L.)</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">09:00</div>
+                                <div class="timeline-status status-delayed">+5 min</div>
+                                <div class="timeline-description">Dr. Garcia - Transfer procedure (Patient C.K.)</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">09:30</div>
+                                <div class="timeline-status status-critical">+15 min</div>
+                                <div class="timeline-description">Lab - Egg retrieval (Patient D.R.) - Equipment delay</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">10:00</div>
+                                <div class="timeline-status status-on-time">Scheduled</div>
+                                <div class="timeline-description">Nurse consultation - Medication training (Patient E.T.)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-insights">
+                        <div class="insight-header">
+                            <span>🤖</span>
+                            AI Schedule Optimization
+                        </div>
+                        <ul class="insight-list">
+                            <li class="insight-item">
+                                <span class="insight-priority">HIGH</span>
+                                <div>Reschedule 10:30 consultation to 11:15 to accommodate lab delay and prevent cascade effects</div>
+                            </li>
+                            <li class="insight-item">
+                                <span class="insight-priority medium">MED</span>
+                                <div>Add 15-minute buffer after egg retrievals on Tuesdays based on historical data patterns</div>
+                            </li>
+                            <li class="insight-item">
+                                <span class="insight-priority low">LOW</span>
+                                <div>Consider blocking Dr. Smith's lunch break - historically 23% chance of emergency procedures at this time</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="operations" class="tab-content">
+                    <div class="optimization-panel">
+                        <div class="optimization-card">
+                            <div class="optimization-title">
+                                <span>🔄</span>
+                                Workflow Optimization
+                            </div>
+                            <div class="optimization-suggestion">
+                                <strong>Patient Check-in:</strong> Average 12 minutes. Implement digital forms to reduce to 8 minutes.
+                            </div>
+                            <div class="optimization-suggestion">
+                                <strong>Lab Turnaround:</strong> Blood results taking 48 hours. Batch processing could reduce to 24 hours.
+                            </div>
+                            <div class="optimization-suggestion">
+                                <strong>Room Utilization:</strong> Consultation rooms idle 18% of time. AI suggests optimized booking patterns.
+                            </div>
+                        </div>
+
+                        <div class="optimization-card">
+                            <div class="optimization-title">
+                                <span>📋</span>
+                                Resource Management
+                            </div>
+                            <div class="optimization-suggestion">
+                                <strong>Staff Allocation:</strong> Nurses overutilized Tue-Thu. Consider flexible scheduling.
+                            </div>
+                            <div class="optimization-suggestion">
+                                <strong>Equipment Usage:</strong> Ultrasound Suite 2 underutilized by 35%. Redistribute bookings.
+                            </div>
+                            <div class="optimization-suggestion">
+                                <strong>Inventory:</strong> Medication stock levels optimal. AI predicts 3-day supply buffer needed.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Resource Utilization Heatmap</div>
+                            <div class="chart-period">This week</div>
+                        </div>
+                        <div class="chart-placeholder">
+                            🔥 Staff and room utilization heatmap visualization
+                        </div>
+                    </div>
+                </div>
+
+                <div id="financials" class="tab-content">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Weekly Revenue</div>
+                                <div class="metric-icon">💰</div>
+                            </div>
+                            <div class="metric-value">€87,340</div>
+                            <div class="metric-trend trend-up">
+                                ↗️ +15% vs last week
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Collection Rate</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-value">92.8%</div>
+                            <div class="metric-trend trend-up">
+                                ↗️ +2.1% vs target
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Operating Margin</div>
+                                <div class="metric-icon">📊</div>
+                            </div>
+                            <div class="metric-value">34.2%</div>
+                            <div class="metric-trend trend-up">
+                                ↗️ +1.8% vs budget
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Cost per Cycle</div>
+                                <div class="metric-icon">🔍</div>
+                            </div>
+                            <div class="metric-value">€2,156</div>
+                            <div class="metric-trend trend-down">
+                                ↘️ -€87 vs target
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Revenue Breakdown & Forecasting</div>
+                            <div class="chart-period">YTD with Q4 projection</div>
+                        </div>
+                        <div class="chart-placeholder">
+                            📈 Financial performance and AI-powered revenue forecasting
+                        </div>
+                    </div>
+                </div>
+
+                <div id="insights" class="tab-content">
+                    <div class="ai-insights">
+                        <div class="insight-header">
+                            <span>
