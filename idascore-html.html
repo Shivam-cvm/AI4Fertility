@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDAScore™ - Intelligent Data Analysis for Embryo Evaluation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            background: #2563eb;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #111827;
+        }
+        
+        .logo p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .main-content {
+            padding: 1.5rem 0;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+        
+        .panel h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+        
+        .patient-card {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.75rem;
+        }
+        
+        .patient-card:hover {
+            border-color: #d1d5db;
+        }
+        
+        .patient-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .patient-info h3 {
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .patient-info p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.125rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-primary:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .success-message {
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #059669;
+            gap: 0.25rem;
+        }
+        
+        .stats-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+        }
+        
+        .stat-value {
+            font-weight: 500;
+        }
+        
+        .embryo-card {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .embryo-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .embryo-excellent {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+        
+        .embryo-good {
+            background: #fefce8;
+            border-color: #fde047;
+        }
+        
+        .embryo-fair {
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+        
+        .embryo-poor {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+        
+        .embryo-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .embryo-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .rank-badge {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+        
+        .embryo-image {
+            position: relative;
+            border-radius: 50%;
+            background: #f3f4f6;
+            border: 2px solid #d1d5db;
+            overflow: hidden;
+        }
+        
+        .embryo-image svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .quality-indicator {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .embryo-details h3 {
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        .embryo-details p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .embryo-scores {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .score-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .progress-bar {
+            margin-top: 0.75rem;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+        
+        .progress-track {
+            width: 100%;
+            height: 0.5rem;
+            background: #e5e7eb;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.3s;
+        }
+        
+        .timelapse-viewer {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .timelapse-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .timelapse-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+        
+        .close-btn:hover {
+            color: #6b7280;
+        }
+        
+        .timelapse-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .timelapse-item {
+            text-align: center;
+        }
+        
+        .timelapse-time {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+        
+        .timelapse-stage {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+        
+        .timelapse-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .btn-small {
+            display: flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            gap: 0.25rem;
+            border: 1px solid;
+            cursor: pointer;
+        }
+        
+        .btn-blue {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        
+        .btn-gray {
+            background: white;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+        
+        .empty-state {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        .empty-icon {
+            width: 4rem;
+            height: 4rem;
+            color: #d1d5db;
+            margin: 0 auto 1rem;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            color: #6b7280;
+        }
+        
+        .footer {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 2rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .spinner {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .embryo-scores {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .timelapse-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i data-lucide="brain"></i>
+                    </div>
+                    <div>
+                        <h1>iDAScore™</h1>
+                        <p>Intelligent Data Analysis for Embryo Evaluation</p>
+                    </div>
+                </div>
+                <div class="header-info">
+                    <div class="info-item">
+                        <i data-lucide="clock"></i>
+                        <span id="current-time">2025-06-22 14:30:15</span>
+                    </div>
+                    <div class="info-item">
+                        <i data-lucide="users"></i>
+                        <span>Dr. Smith - Embryology Lab</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <div class="grid">
+                <!-- Left Panel -->
+                <div>
+                    <!-- Patient Selection -->
+                    <div class="panel">
+                        <h2>Patient Selection</h2>
+                        <div id="patient-list">
+                            <!-- Patient cards will be populated by JavaScript -->
+                        </div>
+
+                        <!-- Analysis Controls -->
+                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+                            <button id="run-analysis-btn" class="btn btn-primary" disabled>
+                                <i data-lucide="brain"></i>
+                                Run AI Analysis
+                            </button>
+                            <div id="analysis-success" class="success-message hidden">
+                                <i data-lucide="check-circle"></i>
+                                Analysis completed in 21.3 seconds
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Panel -->
+                    <div class="panel" style="margin-top: 1.5rem;">
+                        <h2>Model Statistics</h2>
+                        <div class="stats-grid">
+                            <div class="stat-row">
+                                <span class="stat-label">Training Dataset:</span>
+                                <span class="stat-value">180,000+ embryos</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Clinics Worldwide:</span>
+                                <span class="stat-value">22 clinics</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Model Version:</span>
+                                <span class="stat-value">iDAScore v2.0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">AUC Performance:</span>
+                                <span class="stat-value">0.707 (Day 5)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel -->
+                <div>
+                    <div id="results-panel" class="empty-state">
+                        <div class="empty-icon">
+                            <i data-lucide="brain"></i>
+                        </div>
+                        <h3>Select a Patient</h3>
+                        <p>Choose a patient from the left panel to view embryo analysis results</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <span>iDAScore™ by Vitrolife | Deep Learning for Embryo Evaluation</span>
+                </div>
+                <div class="footer-right">
+                    <span>CE MDR EU 2017/745</span>
+                    <span>Version 2.0.3</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        let selectedPatient = null;
+        let analysisRunning = false;
+        let analysisComplete = false;
+        let selectedEmbryo = null;
+
+        // Patient data
+        const patients = [
+            {
+                id: 'P001',
+                name: 'Patient A',
+                age: 32,
+                protocol: 'ICSI',
+                day: 5,
+                embryos: [
+                    { id: 'E001', score: 9.2, rank: 1, quality: 'Excellent', implantationProb: 87, status: 'recommended', stage: 'blastocyst', expansion: 'expanded', icm: 'A', te: 'A' },
+                    { id: 'E002', score: 8.7, rank: 2, quality: 'Good', implantationProb: 78, status: 'good', stage: 'blastocyst', expansion: 'expanding', icm: 'B', te: 'A' },
+                    { id: 'E003', score: 7.1, rank: 3, quality: 'Fair', implantationProb: 58, status: 'fair', stage: 'blastocyst', expansion: 'early', icm: 'B', te: 'B' },
+                    { id: 'E004', score: 5.8, rank: 4, quality: 'Poor', implantationProb: 32, status: 'poor', stage: 'blastocyst', expansion: 'early', icm: 'C', te: 'C' }
+                ]
+            },
+            {
+                id: 'P002',
+                name: 'Patient B',
+                age: 29,
+                protocol: 'IVF',
+                day: 3,
+                embryos: [
+                    { id: 'E005', score: 8.9, rank: 1, quality: 'Excellent', implantationProb: 81, status: 'recommended', stage: 'cleavage', cells: 8, fragmentation: 'none' },
+                    { id: 'E006', score: 8.1, rank: 2, quality: 'Good', implantationProb: 71, status: 'good', stage: 'cleavage', cells: 7, fragmentation: 'minimal' },
+                    { id: 'E007', score: 6.9, rank: 3, quality: 'Fair', implantationProb: 54, status: 'fair', stage: 'cleavage', cells: 6, fragmentation: 'moderate' }
+                ]
+            }
+        ];
+
+        // Utility functions
+        function getScoreColor(score) {
+            if (score >= 8.5) return '#059669';
+            if (score >= 7.0) return '#d97706';
+            if (score >= 6.0) return '#ea580c';
+            return '#dc2626';
+        }
+
+        function getQualityClass(quality) {
+            switch(quality) {
+                case 'Excellent': return 'embryo-excellent';
+                case 'Good': return 'embryo-good';
+                case 'Fair': return 'embryo-fair';
+                default: return 'embryo-poor';
+            }
+        }
+
+        function getProgressColor(prob) {
+            if (prob >= 80) return '#10b981';
+            if (prob >= 60) return '#eab308';
+            if (prob >= 40) return '#f97316';
+            return '#ef4444';
+        }
+
+        // Generate embryo SVG
+        function generateEmbryoSVG(embryo, size = 'md') {
+            const dimensions = size === 'sm' ? '64' : size === 'lg' ? '128' : '80';
+            
+            if (embryo.stage === 'blastocyst') {
+                const radius = embryo.expansion === 'expanded' ? 42 : embryo.expansion === 'expanding' ? 38 : 35;
+                const icmRadius = embryo.icm === 'A' ? 12 : embryo.icm === 'B' ? 10 : 8;
+                const icmColor = embryo.icm === 'A' ? '#3b82f6' : embryo.icm === 'B' ? '#6366f1' : '#8b5cf6';
+                const teCount = embryo.te === 'A' ? 12 : embryo.te === 'B' ? 8 : 6;
+                const teColor = embryo.te === 'A' ? '#10b981' : embryo.te === 'B' ? '#f59e0b' : '#ef4444';
+                
+                let teCells = '';
+                for (let i = 0; i < teCount; i++) {
+                    const angle = (i * 360) / teCount;
+                    const teRadius = embryo.expansion === 'expanded' ? 40 : 33;
+                    const x = 50 + teRadius * Math.cos(angle * Math.PI / 180);
+                    const y = 50 + teRadius * Math.sin(angle * Math.PI / 180);
+                    teCells += `<circle cx="${x}" cy="${y}" r="3" fill="${teColor}" />`;
+                }
+                
+                return `
+                    <svg viewBox="0 0 100 100" style="width: ${dimensions}px; height: ${dimensions}px;">
+                        <circle cx="50" cy="50" r="48" fill="#f3f4f6" stroke="#d1d5db" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="${radius}" fill="${embryo.expansion === 'expanded' ? '#e5e7eb' : '#f3f4f6'}" />
+                        <circle cx="${embryo.expansion === 'expanded' ? 30 : 35}" cy="${embryo.expansion === 'expanded' ? 35 : 40}" r="${icmRadius}" fill="${icmColor}" />
+                        ${teCells}
+                    </svg>
+                `;
+            } else {
+                // Cleavage stage
+                let cells = '';
+                const cellCount = embryo.cells || 8;
+                for (let i = 0; i < cellCount; i++) {
+                    const angle = (i * 360) / cellCount;
+                    const cellRadius = cellCount <= 4 ? 15 : cellCount <= 8 ? 18 : 20;
+                    const distance = cellCount <= 4 ? 15 : cellCount <= 8 ? 12 : 10;
+                    const x = 50 + distance * Math.cos(angle * Math.PI / 180);
+                    const y = 50 + distance * Math.sin(angle * Math.PI / 180);
+                    cells += `<circle cx="${x}" cy="${y}" r="${cellRadius / cellCount * 4}" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1" />`;
+                }
+                
+                let fragments = '';
+                if (embryo.fragmentation !== 'none') {
+                    const fragCount = embryo.fragmentation === 'moderate' ? 6 : 3;
+                    for (let i = 0; i < fragCount; i++) {
+                        const angle = Math.random() * 360;
+                        const distance = 25 + Math.random() * 15;
+                        const x = 50 + distance * Math.cos(angle * Math.PI / 180);
+                        const y = 50 + distance * Math.sin(angle * Math.PI / 180);
+                        fragments += `<circle cx="${x}" cy="${y}" r="2" fill="#ef4444" />`;
+                    }
+                }
+                
+                return `
+                    <svg viewBox="0 0 100 100" style="width: ${dimensions}px; height: ${dimensions}px;">
+                        <circle cx="50" cy="50" r="48" fill="#f3f4f6" stroke="#d1d5db" stroke-width="2"/>
+                        ${cells}
+                        ${fragments}
+                    </svg>
+                `;
+            }
+        }
+
+        // Render functions
+        function renderPatients() {
+            const patientList = document.getElementById('patient-list');
+            patientList.innerHTML = patients.map(patient => `
+                <div class="patient-card ${selectedPatient?.id === patient.id ? 'selected' : ''}" 
+                     onclick="selectPatient('${patient.id}')">
+                    <div class="patient-header">
+                        <div class="patient-info">
+                            <h3>${patient.name}</h3>
+                            <p>ID: ${patient.id}</p>
+                            <p>Age: ${patient.age} | ${patient.protocol}</p>
+                            <p>Day ${patient.day} embryos</p>
+                        </div>
+                        <div>
+                            <span class="badge">${patient.embryos.length} embryos</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderResults() {
+            const resultsPanel = document.getElementById('results-panel');
+            
+            if (!selectedPatient) {
+                resultsPanel.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i data-lucide="brain"></i>
+                        </div>
+                        <h3>Select a Patient</h3>
+                        <p>Choose a patient from the left panel to view embryo analysis results</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            resultsPanel.innerHTML = `
+                <div class="panel" style="padding: 0;">
+                    <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h2 style="margin: 0; font-size: 1.25rem;">${selectedPatient.name} - Embryo Analysis Results</h2>
+                                <p style="color: #6b7280; margin-top: 0.25rem;">
+                                    Day ${selectedPatient.day} • ${selectedPatient.protocol} • ${selectedPatient.embryos.length} embryos analyzed
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button style="padding: 0.5rem; color: #6b7280; background: none; border: none; border-radius: 0.5rem; cursor: pointer;">
+                                    <i data-lucide="download"></i>
+                                </button>
+                                <button style="padding: 0.5rem; color: #6b7280; background: none; border: none; border-radius: 0.5rem; cursor: pointer;">
+                                    <i data-lucide="upload"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 1.5rem;">
+                        ${selectedPatient.embryos.map(embryo => `
+                            <div class="embryo-card ${getQualityClass(embryo.quality)}" onclick="selectEmbryo('${embryo.id}')">
+                                <div class="embryo-header">
+                                    <div class="embryo-left">
+                                        <div class="rank-badge">${embryo.rank}</div>
+                                        <div class="embryo-image" style="width: 80px; height: 80px;">
+                                            ${generateEmbryoSVG(embryo, 'md')}
+                                            <div class="quality-indicator" style="border-color: ${getScoreColor(embryo.score)}; color: ${getScoreColor(embryo.score)};">
+                                                ${embryo.rank}
+                                            </div>
+                                        </div>
+                                        <div class="embryo-details">
+                                            <h3>Embryo ${embryo.id}</h3>
+                                            <p>${embryo.quality} Quality</p>
+                                            <p style="font-size: 0.75rem;">
+                                                ${embryo.stage === 'blastocyst' 
+                                                    ? `${embryo.expansion} blastocyst • ICM: ${embryo.icm} • TE: ${embryo.te}`
+                                                    : `${embryo.cells} cells • ${embryo.fragmentation} fragmentation`
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="embryo-scores">
+                                        <div class="score-item">
+                                            <div class="score-value" style="color: ${getScoreColor(embryo.score)};">${embryo.score}</div>
+                                            <div class="score-label">iDAScore</div>
+                                        </div>
+                                        
+                                        <div class="score-item">
+                                            <div class="score-value" style="color: #111827;">${embryo.implantationProb}%</div>
+                                            <div class="score-label">Implantation Probability</div>
+                                        </div>
+                                        
+                                        <div class="score-item">
+                                            ${embryo.rank === 1 
+                                                ? '<div style="display: flex; align-items: center; color: #059669; gap: 0.25rem;"><i data-lucide="award"></i><span style="font-size: 0.875rem; font-weight: 500;">Recommended</span></div>'
+                                                : embryo.rank === 2 
+                                                ? '<div style="display: flex; align-items: center; color: #d97706; gap: 0.25rem;"><i data-lucide="check-circle"></i><span style="font-size: 0.875rem; font-weight: 500;">Alternative</span></div>'
+                                                : ''
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="progress-bar">
+                                    <div class="progress-header">
+                                        <span>Implantation Likelihood</span>
+                                        <span>${embryo.implantationProb}%</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill" style="width: ${embryo.implantationProb}%; background-color: ${getProgressColor(embryo.implantationProb)};"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                        
+                        ${selectedEmbryo ? renderTimelapse() : ''}
+                        
+                        <div style="display: flex; justify-content: space-between; padding-top: 1.5rem; margin-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+                            <div style="display: flex; gap: 0.75rem;">
+                                <button style="padding: 0.5rem 1rem; background: #059669; color: white; border: none; border-radius: 0.5rem; cursor: pointer;">Select for Transfer</button>
+                                <button style="padding: 0.5rem 1rem; background: #2563eb; color: white; border: none; border-radius: 0.5rem; cursor: pointer;">Freeze Remaining</button>
+                            </div>
+                            <div style="display: flex; gap: 0.75rem;">
+                                <button style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; color: #374151; background: white; border-radius: 0.5rem; cursor: pointer;">Generate Report</button>
+                                <button style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; color: #374151; background: white; border-radius: 0.5rem; cursor: pointer;">View Time-lapse</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            lucide.createIcons();
+        }
+
+        function renderTimelapse() {
+            if (!selectedEmbryo) return '';
+            
+            const timePoints = [0, 24, 48, 72, 96, 120];
+            
+            return `
+                <div class="timelapse-viewer">
+                    <div class="timelapse-header">
+                        <h3>Time-lapse Sequence - Embryo ${selectedEmbryo.id}</h3>
+                        <button class="close-btn" onclick="closeTimelapse()">✕</button>
+                    </div>
+                    
+                    <div class="timelapse-grid">
+                        ${timePoints.map(hour => {
+                            const cells = Math.min(selectedEmbryo.cells || 8, Math.max(1, Math.floor(Math.pow(2, hour/24))));
+                            const stage = hour >= 96 ? 'blastocyst' : 'cleavage';
+                            const expansion = hour >= 96 ? 'expanded' : hour >= 72 ? 'expanding' : 'early';
+                            
+                            const embryoForTime = {
+                                ...selectedEmbryo,
+                                expansion,
+                                cells,
+                                stage
+                            };
+                            
+                            return `
+                                <div class="timelapse-item">
+                                    <div class="embryo-image" style="width: 64px; height: 64px; margin: 0 auto;">
+                                        ${generateEmbryoSVG(embryoForTime, 'sm')}
+                                    </div>
+                                    <div class="timelapse-time">${hour}h</div>
+                                    <div class="timelapse-stage">${stage === 'blastocyst' ? 'Blastocyst' : `${cells} cells`}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    <div class="timelapse-controls">
+                        <button class="btn-small btn-blue">
+                            <i data-lucide="play"></i>
+                            Play Sequence
+                        </button>
+                        <button class="btn-small btn-gray">
+                            <i data-lucide="rotate-ccw"></i>
+                            Restart
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Event handlers
+        function selectPatient(patientId) {
+            selectedPatient = patients.find(p => p.id === patientId);
+            selectedEmbryo = null;
+            updateRunButton();
+            renderPatients();
+            renderResults();
+        }
+
+        function selectEmbryo(embryoId) {
+            selectedEmbryo = selectedPatient?.embryos.find(e => e.id === embryoId);
+            renderResults();
+        }
+
+        function closeTimelapse() {
+            selectedEmbryo = null;
+            renderResults();
+        }
+
+        function updateRunButton() {
+            const btn = document.getElementById('run-analysis-btn');
+            btn.disabled = !selectedPatient || analysisRunning;
+        }
+
+        function runAnalysis() {
+            if (!selectedPatient || analysisRunning) return;
+            
+            analysisRunning = true;
+            analysisComplete = false;
+            
+            const btn = document.getElementById('run-analysis-btn');
+            const successMsg = document.getElementById('analysis-success');
+            
+            btn.innerHTML = '<div class="spinner"></div> Analyzing...';
+            btn.disabled = true;
+            successMsg.classList.add('hidden');
+            
+            setTimeout(() => {
+                analysisRunning = false;
+                analysisComplete = true;
+                
+                btn.innerHTML = '<i data-lucide="brain"></i> Run AI Analysis';
+                btn.disabled = false;
+                successMsg.classList.remove('hidden');
+                
+                lucide.createIcons();
+            }, 3000);
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('en-CA', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false 
+            }).replace(/,/, '');
+            
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPatients();
+            renderResults();
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            document.getElementById('run-analysis-btn').addEventListener('click', runAnalysis);
+            
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
