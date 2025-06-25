@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI in Fertility Care: Professional Personas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .personas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .persona-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .persona-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .persona-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .persona-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .persona-subtitle {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .adoption-rate {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .high-adoption { color: #4CAF50; }
+        .medium-adoption { color: #FF9800; }
+        .low-adoption { color: #f44336; }
+        .no-adoption { color: #757575; }
+
+        .quick-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            display: block;
+        }
+
+        .detail-view {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .detail-icon {
+            font-size: 4rem;
+            margin-right: 20px;
+        }
+
+        .detail-title h2 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .detail-subtitle {
+            font-style: italic;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .detail-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .detail-section h4 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .detail-section p, .detail-section ul {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .detail-section ul {
+            padding-left: 20px;
+        }
+
+        .detail-section li {
+            margin-bottom: 5px;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .emotion-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .emotion-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .quote {
+            font-style: italic;
+            background: #f0f8ff;
+            padding: 15px;
+            border-left: 4px solid #2196f3;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .personas-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI in Fertility Care</h1>
+            <p>Professional Perspectives & Adoption Patterns</p>
+        </div>
+
+        <div id="mainView">
+            <div class="personas-grid">
+                <div class="persona-card" onclick="showDetail('embryologists')">
+                    <span class="persona-icon">🔬</span>
+                    <h3>Embryologists</h3>
+                    <div class="persona-subtitle">The AI Champions</div>
+                    <div class="adoption-rate high-adoption">94.1%</div>
+                    <div class="quick-stats">
+                        <div class="stat">
+                            <span class="stat-value">n=17</span>
+                            <span>Sample</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">47.1%</span>
+                            <span>Daily Use</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">76.5%</span>
+                            <span>Female</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="persona-card" onclick="showDetail('specialists')">
+                    <span class="persona-icon">👩‍⚕️</span>
+                    <h3>Fertility Specialists</h3>
+                    <div class="persona-subtitle">The Experienced Optimists</div>
+                    <div class="adoption-rate medium-adoption">56.2%</div>
+                    <div class="quick-stats">
+                        <div class="stat">
+                            <span class="stat-value">n=16</span>
+                            <span>Sample</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">68.8%</span>
+                            <span>>15 Years</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">68.8%</span>
+                            <span>Female</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="persona-card" onclick="showDetail('administrators')">
+                    <span class="persona-icon">💼</span>
+                    <h3>Administrators</h3>
+                    <div class="persona-subtitle">The Operational Optimists</div>
+                    <div class="adoption-rate medium-adoption">36.4%</div>
+                    <div class="quick-stats">
+                        <div class="stat">
+                            <span class="stat-value">n=11</span>
+                            <span>Sample</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">63.6%</span>
+                            <span>Tech Positive</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">90.9%</span>
+                            <span>Female</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="persona-card" onclick="showDetail('nurses')">
+                    <span class="persona-icon">🤱</span>
+                    <h3>Nurses/Midwives</h3>
+                    <div class="persona-subtitle">The Caring Skeptics</div>
+                    <div class="adoption-rate low-adoption">8.3%</div>
+                    <div class="quick-stats">
+                        <div class="stat">
+                            <span class="stat-value">n=12</span>
+                            <span>Sample</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">64%</span>
+                            <span>Need Training</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">91.7%</span>
+                            <span>Female</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="persona-card" onclick="showDetail('counselors')">
+                    <span class="persona-icon">🧠</span>
+                    <h3>Counselors</h3>
+                    <div class="persona-subtitle">The Human Connection Guardians</div>
+                    <div class="adoption-rate low-adoption">7.7%</div>
+                    <div class="quick-stats">
+                        <div class="stat">
+                            <span class="stat-value">n=13</span>
+                            <span>Sample</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">61.5%</span>
+                            <span>>15 Years</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">100%</span>
+                            <span>Female</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="persona-card" onclick="showDetail('obgyns')">
+                    <span class="persona-icon">👶</span>
+                    <h3>OB-Gynaecologists</h3>
+                    <div class="persona-subtitle">The Evidence Seekers</div>
+                    <div class="adoption-rate no-adoption">0%</div>
+                    <div class="quick-stats">
+                        <div class="stat">
+                            <span class="stat-value">n=7</span>
+                            <span>Sample</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">86%</span>
+                            <span>Need Training</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">85.7%</span>
+                            <span>Female</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail Views -->
+        <div id="embryologists" class="detail-view">
+            <button class="back-btn" onclick="showMain()">← Back to Overview</button>
+            <div class="detail-header">
+                <span class="detail-icon">🔬</span>
+                <div class="detail-title">
+                    <h2>Embryologists</h2>
+                    <div class="detail-subtitle">The AI Champions (n=17)</div>
+                </div>
+            </div>
+            
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <h4>👥 Demographics & Experience</h4>
+                    <ul>
+                        <li><span class="highlight">76.5% female</span>, 58.8% aged 35-44</li>
+                        <li>64.7% postgraduate education</li>
+                        <li>41.2% have 11-15 years experience</li>
+                        <li>Most digitally comfortable: 64.7% moderate, 29.4% extensive</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🤖 AI Adoption & Usage</h4>
+                    <ul>
+                        <li><span class="highlight">94.1% have used AI</span> (highest adoption)</li>
+                        <li><span class="highlight">47.1% daily users</span>, 23.5% weekly</li>
+                        <li>Primary use: embryo selection/grading (100% of users)</li>
+                        <li>Also use: predictive analytics (3), phone call summaries</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Technology Attitudes</h4>
+                    <ul>
+                        <li>70.6% agree they double-check AI outputs</li>
+                        <li>58.8% feel need to verify before acting</li>
+                        <li>47.1% have overridden AI recommendations</li>
+                        <li>47.1% rely on clinical judgment over AI</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>✅ What Excites Them</h4>
+                    <div class="quote">"Perfecting embryo selection"</div>
+                    <div class="quote">"Decreases operator variation and bias"</div>
+                    <div class="quote">"Time management/saving"</div>
+                    <div class="quote">"The potential for a higher level of accuracy"</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>⚠️ Key Concerns</h4>
+                    <div class="quote">"Over-reliance without human oversight"</div>
+                    <div class="quote">"New generation relying solely on AI without knowing the science"</div>
+                    <div class="quote">"Data selection not appropriate leading to incorrect conclusions"</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>😊 Emotional Responses</h4>
+                    <div class="emotion-tags">
+                        <span class="emotion-tag">🤔 Curiosity (12/17)</span>
+                        <span class="emotion-tag">😎 Confidence (8/17)</span>
+                        <span class="emotion-tag">🌈 Hope (6/17)</span>
+                        <span class="emotion-tag">😟 Anxiety (2/17)</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>📊 Integration Views</h4>
+                    <ul>
+                        <li><strong>Should use:</strong> Treatment planning (47.1%), lab optimization (47.1%)</li>
+                        <li><strong>Use with caution:</strong> Diagnosis (41.2%), patient interaction (35.3%)</li>
+                        <li><strong>Should not use:</strong> Patient interaction (41.2%)</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🔮 Future Vision</h4>
+                    <ul>
+                        <li>58.8% see supportive but limited role</li>
+                        <li>29.4% see significant expansion</li>
+                        <li>Most optimistic about AI's future role</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Implementation Priorities</h4>
+                    <ul>
+                        <li>AI transparency & explainability (12/15)</li>
+                        <li>Clinician control & involvement (9/15)</li>
+                        <li>Workflow & role impact (6/15)</li>
+                        <li>Flexibility in AI adoption (6/15)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="specialists" class="detail-view">
+            <button class="back-btn" onclick="showMain()">← Back to Overview</button>
+            <div class="detail-header">
+                <span class="detail-icon">👩‍⚕️</span>
+                <div class="detail-title">
+                    <h2>Fertility Specialists</h2>
+                    <div class="detail-subtitle">The Experienced Optimists (n=16)</div>
+                </div>
+            </div>
+            
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <h4>👥 Demographics & Experience</h4>
+                    <ul>
+                        <li><span class="highlight">68.8% female</span>, 62.4% aged 35-54</li>
+                        <li>81.3% postgraduate+ education</li>
+                        <li><span class="highlight">68.8% have >15 years experience</span> (most experienced)</li>
+                        <li>Digital experience: 56.2% moderate, 25% limited</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🤖 AI Adoption & Usage</h4>
+                    <ul>
+                        <li>56.2% have used AI</li>
+                        <li>Usage frequency: 31.2% rarely, 12.5% monthly</li>
+                        <li>Uses: embryo grading (3), predictive analytics (4), workflow optimization (3)</li>
+                        <li>Some use ChatGPT for formal letters</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Technology Attitudes</h4>
+                    <ul>
+                        <li>68.8% confident in AI learning ability</li>
+                        <li>50% enjoy experimenting with technology</li>
+                        <li>56.2% comfortable using new tech in practice</li>
+                        <li>Balanced approach to traditional vs. new methods</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>✅ What Excites Them</h4>
+                    <div class="quote">"Improved outcomes for patients, efficiency gains"</div>
+                    <div class="quote">"Precision and standardisation"</div>
+                    <div class="quote">"May help give more answers to patients, understand better prognosis"</div>
+                    <div class="quote">"Speeding up workflow or responses to patient messages"</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>⚠️ Key Concerns</h4>
+                    <div class="quote">"Loss of human contact"</div>
+                    <div class="quote">"Reliability and loss of human factor in patient care"</div>
+                    <div class="quote">"Dumbing down of knowledge and skill"</div>
+                    <div class="quote">"That it will eventually make everybody redundant"</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>😊 Emotional Responses</h4>
+                    <div class="emotion-tags">
+                        <span class="emotion-tag">🤔 Curiosity (10/15)</span>
+                        <span class="emotion-tag">🌈 Hope (7/15)</span>
+                        <span class="emotion-tag">😟 Anxiety (5/15)</span>
+                        <span class="emotion-tag">😎 Confidence (3/15)</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>📊 Integration Views</h4>
+                    <ul>
+                        <li><strong>Should use:</strong> Lab optimization (56.2%), treatment planning (37.5%)</li>
+                        <li><strong>Use with caution:</strong> Diagnosis (62.5%), treatment planning (50%)</li>
+                        <li>Generally supportive with appropriate oversight</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🔮 Future Vision</h4>
+                    <ul>
+                        <li>50% see supportive but limited role</li>
+                        <li>31.2% see significant expansion</li>
+                        <li>Cautiously optimistic about AI's potential</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Implementation Priorities</h4>
+                    <ul>
+                        <li>AI transparency & explainability (10/14)</li>
+                        <li>Clinician control & involvement (9/14)</li>
+                        <li>Training & support access (5/14)</li>
+                        <li>Ethical alignment & guidelines (4/14)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="administrators" class="detail-view">
+            <button class="back-btn" onclick="showMain()">← Back to Overview</button>
+            <div class="detail-header">
+                <span class="detail-icon">💼</span>
+                <div class="detail-title">
+                    <h2>Administrators/Managers</h2>
+                    <div class="detail-subtitle">The Operational Optimists (n=11)</div>
+                </div>
+            </div>
+            
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <h4>👥 Demographics & Experience</h4>
+                    <ul>
+                        <li><span class="highlight">90.9% female</span>, 90.9% aged 25-44</li>
+                        <li>Mixed education: 27.3% vocational to 18.2% postgraduate</li>
+                        <li>Varied experience levels across the group</li>
+                        <li>Digital experience: 54.5% moderate, 27.3% extensive</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🤖 AI Adoption & Usage</h4>
+                    <ul>
+                        <li>36.4% have used AI</li>
+                        <li>Uses: embryo selection (1), predictive analytics (1), workflow optimization (1)</li>
+                        <li>Non-users primarily cite training needs</li>
+                        <li>Most operationally focused applications</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Technology Attitudes</h4>
+                    <ul>
+                        <li><span class="highlight">63.6% strongly agree</span> they enjoy experimenting (highest)</li>
+                        <li>45.5% strongly agree confident in AI learning</li>
+                        <li>Most technology-positive group overall</li>
+                        <li>Open to innovation and efficiency improvements</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>✅ What Excites Them</h4>
+                    <div class="quote">"Better outcomes and new innovative treatments"</div>
+                    <div class="quote">"Reduce admin tasks"</div>
+                    <div class="quote">"Faster process"</div>
+                    <div class="quote">"Outcomes for patients and ability to provide more information"</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>⚠️ Key Concerns</h4>
+                    <div class="quote">"Becoming overly reliant/dependant on tech and losing skills"</div>
+                    <div class="quote">"Losing human factor"</div>
+                    <div class="quote">"Accuracy" concerns</div>
+                    <div class="quote">"AI in its infancy"</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>😊 Emotional Responses</h4>
+                    <div class="emotion-tags">
+                        <span class="emotion-tag">🤔 Curiosity (5/7)</span>
+                        <span class="emotion-tag">🌈 Hope (4/7)</span>
+                        <span class="emotion-tag">😎 Confidence (4/7)</span>
+                        <span class="emotion-tag">😕 Discomfort (1/7)</span>
+                    </div>
+                    <p>Most positive emotional profile across all groups</p>
+                </div>
+
+                <div class="detail-section">
+                    <h4>📊 Integration Views</h4>
+                    <ul>
+                        <li>Most open to lab optimization and workflow improvements</li>
+                        <li>Pragmatic about implementation across different areas</li>
+                        <li>Focus on operational efficiency and patient outcomes</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🔮 Future Vision</h4>
+                    <ul>
+                        <li>27.3% supportive but limited role</li>
+                        <li>18.2% significant expansion</li>
+                        <li>18.2% each minimal impact and uncertain</li>
+                        <li>Most pragmatic and balanced outlook</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Implementation Priorities</h4>
+                    <ul>
+                        <li>AI transparency & explainability (6/7)</li>
+                        <li>Training & support access (4/7)</li>
+                        <li>Clinician control & involvement (3/7)</li>
+                        <li>Workflow & role impact (3/7)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="nurses" class="detail-view">
+            <button class="back-btn" onclick="showMain()">← Back to Overview</button>
+            <div class="detail-header">
+                <span class="detail-icon">🤱</span>
+                <div class="detail-title">
+                    <h2>Nurses/Midwives</h2>
+                    <div class="detail-subtitle">The Caring Skeptics (n=12)</div>
+                </div>
+            </div>
+            
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <h4>👥 Demographics & Experience</h4>
+                    <ul>
+                        <li><span class="highlight">91.7% female</span>, 91.7% aged 25-44</li>
+                        <li>58.3% bachelor's degree, 41.7% postgraduate</li>
+                        <li>Experience varies: 33.3% have 11-15 years</li>
+                        <li>Digital experience: 50% moderate, 25% each limited and extensive</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🤖 AI Adoption & Usage</h4>
+                    <ul>
+                        <li><span class="highlight">8.3% have used AI</span> (lowest adoption)</li>
+                        <li>Non-users cite: lack of awareness/training (64%), lack of evidence (18%)</li>
+                        <li>Other barriers: opportunity hasn't presented itself, unsure</li>
+                        <li>High interest but low exposure</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Technology Attitudes</h4>
+                    <ul>
+                        <li>50% neutral on AI confidence</li>
+                        <li>41.7% agree they enjoy experimenting</li>
+                        <li>58.3% agree they only adopt when required</li>
+                        <li>Cautious but open to learning</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>✅ What Excites Them</h4>
+                    <div class="quote">"Possibility of more accuracy with care, less room for error"</div>
+                    <div class="quote">"Efficiency and safety"</div>
+                    <div class="quote">"Advances and progress in fertility care in general is a good thing"</div>
+                    <p><em>Note: Many express uncertainty and need for more information</em></p>
+                </div>
+
+                <div class="detail-section">
+                    <h4>⚠️ Key Concerns</h4>
+                    <div class="quote">"Losing the human element. Patients need human connection when ongoing treatment that is so emotive"</div>
+                    <div class="quote">"Errors and overtaking human roles"</div>
+                    <div class="quote">"What if it's wrong? Who is going to moderate and check the work of AI?"</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>😊 Emotional Responses</h4>
+                    <div class="emotion-tags">
+                        <span class="emotion-tag">🤔 Curiosity (7/11)</span>
+                        <span class="emotion-tag">😟 Anxiety (4/11)</span>
+                        <span class="emotion-tag">🌈 Hope (2/11)</span>
+                        <span class="emotion-tag">😕 Discomfort (2/11)</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>📊 Integration Views</h4>
+                    <ul>
+                        <li>Mixed views - some support diagnosis (16.7%)</li>
+                        <li>25% say treatment planning "should not be used"</li>
+                        <li>Generally prefer cautious approach</li>
+                        <li>Emphasis on maintaining human oversight</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🔮 Future Vision</h4>
+                    <ul>
+                        <li>25% each supportive role and significant expansion</li>
+                        <li>16.7% each minimal impact and uncertain</li>
+                        <li>Most divided views on future direction</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Implementation Priorities</h4>
+                    <ul>
+                        <li>AI transparency & explainability (7/10)</li>
+                        <li>Ethical alignment & guidelines (6/10)</li>
+                        <li>Training & support access (6/10)</li>
+                        <li>Clinician control & involvement (6/10)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="counselors" class="detail-view">
+            <button class="back-btn" onclick="showMain()">← Back to Overview</button>
+            <div class="detail-header">
+                <span class="detail-icon">🧠</span>
+                <div class="detail-title">
+                    <h2>Counselors/Mental Health</h2>
+                    <div class="detail-subtitle">The Human Connection Guardians (n=13)</div>
+                </div>
+            </div>
+            
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <h4>👥 Demographics & Experience</h4>
+                    <ul>
+                        <li><span class="highlight">100% female</span>, 76.9% aged 35+</li>
+                        <li>53.8% postgraduate education</li>
+                        <li><span class="highlight">61.5% have >15 years experience</span></li>
+                        <li>Digital experience: <span class="highlight">53.8% limited</span> (least digital), 38.5% moderate</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🤖 AI Adoption & Usage</h4>
+                    <ul>
+                        <li>7.7% have used AI</li>
+                        <li>Non-users cite: lack of awareness/training (92%), ethical concerns (25%), lack of evidence (25%)</li>
+                        <li>Additional barrier: "not necessary in counselling and psychotherapy (yet!)"</li>
+                        <li>Strongest resistance to AI adoption</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Technology Attitudes</h4>
+                    <ul>
+                        <li>38.5% agree confident in AI learning</li>
+                        <li>46.2% neutral on experimenting with technology</li>
+                        <li>46.2% prefer traditional decision-making methods</li>
+                        <li>Most conservative technology adoption approach</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>✅ What Excites Them</h4>
+                    <div class="quote">"Success rates for clients, lessening the time and toll on individuals and couples"</div>
+                    <div class="quote">"Building rapport and trust with the patient/service user is more important"</div>
+                    <p><em>Most responses: "Don't know enough," "Need more information," "Uncertain"</em></p>
+                </div>
+
+                <div class="detail-section">
+                    <h4>⚠️ Key Concerns</h4>
+                    <div class="quote">"Withdrawal of human interaction and connection"</div>
+                    <div class="quote">"Lack of empathy, care, heart"</div>
+                    <div class="quote">"If it replaces human care which is vital for wellbeing"</div>
+                    <div class="quote">"Fertility treatment can be traumatic... using AI may exacerbate these issues"</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>😊 Emotional Responses</h4>
+                    <div class="emotion-tags">
+                        <span class="emotion-tag">🤔 Curiosity (10/12)</span>
+                        <span class="emotion-tag">😟 Anxiety (5/12)</span>
+                        <span class="emotion-tag">😕 Discomfort (3/12)</span>
+                        <span class="emotion-tag">🌈 Hope (2/12)</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>📊 Integration Views</h4>
+                    <ul>
+                        <li><strong>Strong resistance:</strong> 61.5% say patient interaction "should not be used"</li>
+                        <li>Generally prefer "use with caution" across most areas</li>
+                        <li>69.2% concerned about accountability when AI makes errors</li>
+                        <li>53.8% feel AI is too impersonal for fertility care</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🔮 Future Vision</h4>
+                    <ul>
+                        <li><span class="highlight">53.8% unsure/need more information</span> (highest uncertainty)</li>
+                        <li>30.8% see supportive but limited role</li>
+                        <li>Most cautious about AI's future in fertility care</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Implementation Priorities</h4>
+                    <ul>
+                        <li>AI transparency & explainability (9/12)</li>
+                        <li>Ethical alignment & guidelines (8/12)</li>
+                        <li>Clinician control & involvement (6/12)</li>
+                        <li>Patient involvement in AI (5/12)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="obgyns" class="detail-view">
+            <button class="back-btn" onclick="showMain()">← Back to Overview</button>
+            <div class="detail-header">
+                <span class="detail-icon">👶</span>
+                <div class="detail-title">
+                    <h2>Obstetrician-Gynaecologists</h2>
+                    <div class="detail-subtitle">The Evidence Seekers (n=7)</div>
+                </div>
+            </div>
+            
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <h4>👥 Demographics & Experience</h4>
+                    <ul>
+                        <li><span class="highlight">85.7% female</span>, 71.5% aged 35-54</li>
+                        <li><span class="highlight">85.7% postgraduate education</span></li>
+                        <li>57.2% have 6-15 years experience</li>
+                        <li>Digital experience: 57.1% moderate, 42.9% limited</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🤖 AI Adoption & Usage</h4>
+                    <ul>
+                        <li><span class="highlight">0% have used AI</span></li>
+                        <li>Barriers: lack of awareness/training (86%), lack of evidence (43%), ethical concerns (29%)</li>
+                        <li>Most evidence-focused approach to adoption</li>
+                        <li>Waiting for proven benefits before implementation</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Technology Attitudes</h4>
+                    <ul>
+                        <li>57.1% agree confident in learning AI</li>
+                        <li>57.1% agree comfortable with new technology</li>
+                        <li><span class="highlight">71.4% prefer traditional methods</span></li>
+                        <li>Evidence-based approach to technology adoption</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>✅ What Excites Them</h4>
+                    <div class="quote">"Ability to improve outcomes"</div>
+                    <div class="quote">"Expediting simple routine decision making"</div>
+                    <div class="quote">"It might help improve pregnancy rates"</div>
+                    <div class="quote">"May be helpful as an adjunct, to overcome some human error"</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>⚠️ Key Concerns</h4>
+                    <div class="quote">"Over-reliance on AI & lack of healthy scepticism of its results"</div>
+                    <div class="quote">"We will always need human skills/opinions/insight when making decisions"</div>
+                    <div class="quote">"Over reliance and issues when errors"</div>
+                    <div class="quote">"Might not help - data too vast"</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>😊 Emotional Responses</h4>
+                    <div class="emotion-tags">
+                        <span class="emotion-tag">🤔 Curiosity (4/7)</span>
+                        <span class="emotion-tag">🌈 Hope (2/7)</span>
+                        <span class="emotion-tag">😕 Discomfort (1/7)</span>
+                        <span class="emotion-tag">😐 Indifference (1/7)</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>📊 Integration Views</h4>
+                    <ul>
+                        <li>Generally favor "could use with caution" approach</li>
+                        <li>Treatment planning (71.4% caution), diagnosis (42.9% caution)</li>
+                        <li><strong>Strong resistance:</strong> 57.1% oppose patient interaction applications</li>
+                        <li>Want evidence before wider implementation</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🔮 Future Vision</h4>
+                    <ul>
+                        <li><span class="highlight">100% see supportive but limited role</span> (most conservative)</li>
+                        <li>No one sees significant expansion or minimal impact</li>
+                        <li>Unanimous on need for human oversight</li>
+                    </ul>
+                </div>
+
+                <div class="detail-section">
+                    <h4>🎯 Implementation Priorities</h4>
+                    <ul>
+                        <li>Ethical alignment & guidelines (5/7)</li>
+                        <li>AI transparency & explainability (5/7)</li>
+                        <li>Clinician control & involvement (4/7)</li>
+                        <li>Training & support access (4/7)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showDetail(persona) {
+            // Hide main view
+            document.getElementById('mainView').style.display = 'none';
+            
+            // Hide all detail views
+            const detailViews = document.querySelectorAll('.detail-view');
+            detailViews.forEach(view => view.style.display = 'none');
+            
+            // Show selected detail view
+            document.getElementById(persona).style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function showMain() {
+            // Hide all detail views
+            const detailViews = document.querySelectorAll('.detail-view');
+            detailViews.forEach(view => view.style.display = 'none');
+            
+            // Show main view
+            document.getElementById('mainView').style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                showMain();
+            }
+        });
+    </script>
+</body>
+</html>
